@@ -17,7 +17,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -44,11 +47,17 @@ public class Endpoint {
         Elements elements = doc.select("a.active");
 
         List<String> dates = new ArrayList<>();
-        String something = "11";
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int intMonth = localDate.getMonthValue();
+        int nextIntMonth = intMonth + 1;
+        String month = String.valueOf(intMonth);
+        String nextMonth = String.valueOf(nextIntMonth);
         for (Element e : elements) {
             dates.add(e.text());
         }
-        write(dates, something);
+        write(dates, month);
+        write(dates, nextMonth);
 
         File file = new File("mycalendar.ics");
         Resource fileSystemResource = new FileSystemResource(file);
@@ -93,10 +102,3 @@ public class Endpoint {
         }
     }
 }
-
-
-
-
-
-
-
