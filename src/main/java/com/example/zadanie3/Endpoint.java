@@ -48,7 +48,6 @@ public class Endpoint {
         for (Element e : elements) {
             dates.add(e.text());
         }
-        System.out.println(dates.get(0));
         write(dates, something);
 
         File file = new File("mycalendar.ics");
@@ -89,7 +88,6 @@ public class Endpoint {
 
             bw.write(calEnd);
             bw.close();
-            System.out.println("Done");
         } catch (IOException e) {
             e.printStackTrace();
         }
