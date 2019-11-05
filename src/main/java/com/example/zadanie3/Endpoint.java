@@ -43,27 +43,36 @@ public class Endpoint {
 
     @GetMapping("convert-calendar")
     public ResponseEntity<Resource> returnCalendar() throws IOException {
-        Document doc = Jsoup.connect("http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=2019&miesiac=11&lang=1").get();
-        Elements elements = doc.select("a.active");
 
-        List<String> dates = new ArrayList<>();
+
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int year = localDate.getYear();
         int intMonth = localDate.getMonthValue();
         int nextIntMonth = intMonth + 1;
         String month = String.valueOf(intMonth);
         String nextMonth = String.valueOf(nextIntMonth);
-        for (Element e : elements) {
-            dates.add(e.text());
-        }
-        write(dates, month);
-        write(dates, nextMonth);
+
+        fetchCalendar(month, String.valueOf(year));
+        fetchCalendar(nextMonth, String.valueOf(year));
 
         File file = new File("mycalendar.ics");
         Resource fileSystemResource = new FileSystemResource(file);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("text/calendar"))
                 .body(fileSystemResource);
+    }
+
+    private void fetchCalendar(String month, String year) throws IOException {
+        Document doc = Jsoup.connect("http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=" + year + "&miesiac=" + month + "&lang=1").get();
+        Elements elements = doc.select("a.active");
+
+        List<String> dates = new ArrayList<>();
+
+        for (Element e : elements) {
+            dates.add(e.text());
+        }
+        write(dates, month);
     }
 
 
