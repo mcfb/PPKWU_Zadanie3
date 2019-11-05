@@ -5,7 +5,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +41,7 @@ public class Endpoint {
     private String newLine = "\n";
 
     @GetMapping("convert-calendar")
-    public ResponseEntity<String> returnCalendar() throws IOException {
+    public ResponseEntity<Resource> returnCalendar() throws IOException {
         Document doc = Jsoup.connect("http://www.weeia.p.lodz.pl/pliki_strony_kontroler/kalendarz.php?rok=2019&miesiac=11&lang=1").get();
         Elements elements = doc.select("a.active");
 
@@ -48,10 +51,13 @@ public class Endpoint {
             dates.add(e.text());
         }
         System.out.println(dates.get(0));
-        write(dates,something);
+        write(dates, something);
 
-        return new ResponseEntity<>("", HttpStatus.OK);
-
+        File file = new File("mycalendar.ics");
+        Resource fileSystemResource = new FileSystemResource(file);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("text/calendar"))
+                .body(fileSystemResource);
     }
 
 
