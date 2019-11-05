@@ -25,7 +25,6 @@ import java.util.List;
 @RequestMapping("/")
 public class Endpoint {
 
-    public static final String FILE_NAME = "calendar_file.ics";
     private String version = "VERSION:1.0 \n";
     private String prodid = "PRODID://test \n";
     private String calBegin = "BEGIN:VCALENDAR \n";
